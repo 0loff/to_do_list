@@ -1,0 +1,40 @@
+version: '3'
+
+networks:
+  backend:
+
+services:
+  mysql-8-db:
+    image: mysql:8
+    container_name: mysql-8-express
+    volumes:
+      - ./mysql-8/data:/var/lib/mysql
+      - ./mysql-8/conf.d:/etc/mysql/conf.data
+      - ./mysql-8/logs:/var/log/mysql
+      - ./mysql-8/dump:/dump 
+    ports:
+      - "${MYSQL_8_PORT}:3306"
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: ${WORKSAPCE_TIMEZONE}
+    networks:
+      - backend
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        NODEJS_VERSION: '14'
+    container_name: express-server
+    volumes:
+      - ./server:/app
+    depends_on:
+      - mysql-8-db
+    ports:
+      - "7000:3000"
+    networks:
+      - backend

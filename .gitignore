@@ -1,0 +1,10 @@
+**/node_modules
+
+.env
+/mysql-8/data/**
+!/mysql-8/**/.gitkeep
+/mysql-8/dump/**
+!/mysql-8/dump/.gitkeep
+/mysql-8/logs/**
+
+.idea/
